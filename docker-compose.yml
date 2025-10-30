@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: trail-postgres
+    environment:
+      POSTGRES_DB: traildb
+      POSTGRES_USER: trailuser
+      POSTGRES_PASSWORD: trailpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trailuser -d traildb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trail-scraper
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Mount data directory for persistence
+      - ./data:/app/data
+    environment:
+      # Optional: adjust sleep duration between requests (in milliseconds)
+      # SCRAPER_SLEEP_BASE_MS: "1000"
+      - PYTHONUNBUFFERED=1
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=traildb
+      - DB_USER=trailuser
+      - DB_PASSWORD=trailpass
+    # No ports needed (CLI-only)
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trail-api
+    command: ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Mount data directory for persistence  
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=traildb
+      - DB_USER=trailuser
+      - DB_PASSWORD=trailpass
+      - OLLAMA_URL=http://host.docker.internal:11434
+      - CHROMA_DB_PATH=/app/data/chroma
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  postgres_data:
