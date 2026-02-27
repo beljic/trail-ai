@@ -18,6 +18,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
+# Import authentication
+from .auth import get_current_api_key
+
 # Configure logging first
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,12 +40,17 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Add CORS middleware
+# Add CORS middleware - restricted for React app
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=[
+        "http://localhost:3000",  # React dev server
+        "http://localhost:5173",  # Vite dev server
+        # Add your production domain here
+        # "https://your-react-app.com"
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -150,7 +158,8 @@ async def health_check(
 @app.post("/chat", response_model=ChatResponse)
 async def chat(
     message: ChatMessage,
-    chat_manager = Depends(get_chat_manager_dep)
+    chat_manager = Depends(get_chat_manager_dep),
+    api_key: str = Depends(get_current_api_key)
 ):
     """Chat with AI assistant."""
     try:

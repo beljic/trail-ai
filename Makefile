@@ -6,8 +6,16 @@ help:
 	@echo ""
 	@echo "Scraper:"
 	@echo "  make build       - Build Docker image"
-	@echo "  make run         - Run scraper (build if needed)"
+	@echo "  make run         - Run scraper in Docker (incremental)"
+	@echo "  make scrape      - Run scraper locally (incremental)"
+	@echo "  make scrape-full - Run full scrape locally"
 	@echo "  make clean       - Remove output file (data/clean/races.jsonl)"
+	@echo ""
+	@echo "Scraping Workflow:"
+	@echo "  make prepare     - Backup data before scraping"
+	@echo "  make analyze     - Analyze scrape results"
+	@echo "  make test        - Test new scraper features"
+	@echo "  make workflow    - Full workflow: prepare → scrape → analyze"
 	@echo ""
 	@echo "Database:"
 	@echo "  make db-up       - Start PostgreSQL database"
@@ -102,3 +110,38 @@ api-down:
 # Show API server logs
 api-logs:
 	docker compose logs -f api
+
+# === NEW: Scraping Workflow Commands ===
+
+# Prepare for scraping (backup existing data)
+prepare:
+	@echo "🔄 Preparing for scraping..."
+	python prepare_scrape.py
+
+# Run scraper locally (no Docker, incremental mode)
+scrape:
+	@echo "🏃 Running incremental scrape..."
+	python scrape_all.py
+
+# Run full scrape locally (no Docker)
+scrape-full:
+	@echo "🏃 Running FULL scrape..."
+	python scrape_all.py --all
+
+# Analyze scrape results
+analyze:
+	@echo "📊 Analyzing scrape results..."
+	python analyze_scrape_results.py
+
+# Test new features
+test:
+	@echo "🧪 Testing new features..."
+	python test_new_features.py
+
+# Full workflow: prepare → scrape → analyze
+workflow: prepare scrape analyze
+	@echo "✅ Complete scraping workflow finished!"
+
+# Full workflow with full scrape
+workflow-full: prepare scrape-full analyze
+	@echo "✅ Complete FULL scraping workflow finished!"

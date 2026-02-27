@@ -66,7 +66,7 @@ def import_races_from_jsonl(jsonl_path: str, batch_size: int = 100) -> dict:
             race_type, terrain, website, registration_url,
             contact_email, registration_opens, registration_closes,
             fee_eur, fee_rsd, cutoff, organizer, source,
-            event_url, race_url
+            event_url, race_url, image_url
         ) VALUES %s
         ON CONFLICT (id) DO UPDATE SET
             name = EXCLUDED.name,
@@ -92,6 +92,7 @@ def import_races_from_jsonl(jsonl_path: str, batch_size: int = 100) -> dict:
             source = EXCLUDED.source,
             event_url = EXCLUDED.event_url,
             race_url = EXCLUDED.race_url,
+            image_url = EXCLUDED.image_url,
             updated_at = CURRENT_TIMESTAMP
         RETURNING (xmax = 0) AS inserted;
     """
@@ -138,6 +139,7 @@ def import_races_from_jsonl(jsonl_path: str, batch_size: int = 100) -> dict:
                         race.get("source"),
                         race.get("event_url"),
                         race.get("race_url"),
+                        race.get("image_url"),
                     )
 
                     batch.append(values)
