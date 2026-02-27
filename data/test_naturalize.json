@@ -1,0 +1,41 @@
+[
+  {
+    "id": "test123",
+    "name": "Zlatibor Ultra Trail",
+    "date": "2026-06-15",
+    "country": "Serbia",
+    "region": "Zlatibor",
+    "location": "Zlatibor",
+    "organizer": "Trail Running Klub doo Beograd",
+    "source": "trka.rs",
+    "event_url": "https://trka.rs/event/zlatibor-ultra-trail",
+    "description": "Zlatibor Ultra Trail je trka koja se održava na Zlatiboru. Trka ima tri distance: 50km, 30km i 15km. Start je u 8:00 ujutru. Sve distance prolaze kroz prelepe planinske predele.",
+    "image_url": "https://example.com/images/zlatibor.jpg",
+    "races": [
+      {
+        "id": "race1",
+        "event_id": "test123",
+        "name": "Ultra",
+        "distance_km": 50.0,
+        "elevation_gain_m": 2500,
+        "terrain": "trail",
+        "description": "Ultra trka od 50 kilometara sa 2500 metara uspona. Trka prolazi kroz najlepse delove Zlatibora. Starni paket ukljucuje majcu, medalju i hranu.",
+        "organizer": "TRK doo",
+        "source": "trka.rs",
+        "race_url": "https://trka.rs/event/zlatibor-ultra-trail/ultra"
+      },
+      {
+        "id": "race2",
+        "event_id": "test123",
+        "name": "Middle Distance",
+        "distance_km": 30.0,
+        "elevation_gain_m": 1500,
+        "terrain": "trail",
+        "description": "Srednja distanca od 30km sa 1500m D+. Idealna za pocetnike u ultra trkama.",
+        "organizer": "Planinarski klub Zlatibor ad",
+        "source": "trka.rs",
+        "race_url": "https://trka.rs/event/zlatibor-ultra-trail/middle"
+      }
+    ]
+  }
+]

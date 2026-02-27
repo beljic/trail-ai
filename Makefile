@@ -16,6 +16,7 @@ help:
 	@echo "  make analyze     - Analyze scrape results"
 	@echo "  make test        - Test new scraper features"
 	@echo "  make workflow    - Full workflow: prepare → scrape → analyze"
+	@echo "  make naturalize  - Naturalize scraped data (AI reformulation)"
 	@echo ""
 	@echo "Database:"
 	@echo "  make db-up       - Start PostgreSQL database"
@@ -145,3 +146,23 @@ workflow: prepare scrape analyze
 # Full workflow with full scrape
 workflow-full: prepare scrape-full analyze
 	@echo "✅ Complete FULL scraping workflow finished!"
+
+# Naturalize scraped data (make it look less scraped)
+naturalize:
+	@echo "🎨 Naturalizing scraped data..."
+	@if [ -f data/export/races.json ]; then \
+		python naturalize_data.py data/export/races.json -o data/export/races_naturalized.json; \
+	else \
+		echo "❌ Error: data/export/races.json not found. Run 'make workflow' first."; \
+		exit 1; \
+	fi
+
+# Naturalize without AI (faster, only basic transformations)
+naturalize-fast:
+	@echo "🎨 Naturalizing scraped data (fast mode, no AI)..."
+	@if [ -f data/export/races.json ]; then \
+		python naturalize_data.py data/export/races.json -o data/export/races_naturalized.json --no-ai; \
+	else \
+		echo "❌ Error: data/export/races.json not found. Run 'make workflow' first."; \
+		exit 1; \
+	fi
