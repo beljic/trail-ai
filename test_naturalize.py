@@ -20,7 +20,7 @@ def create_test_data():
             "organizer": "Trail Running Klub doo Beograd",
             "source": "trka.rs",
             "event_url": "https://trka.rs/event/zlatibor-ultra-trail",
-            "description": "Zlatibor Ultra Trail je trka koja se održava na Zlatiboru. Trka ima tri distance: 50km, 30km i 15km. Start je u 8:00 ujutru. Sve distance prolaze kroz prelepe planinske predele.",
+            "description": "Zlatibor Ultra Trail je trka koja se održava na Zlatiboru. Trka ima tri distance: 50km, 30km i 15km. Start je u 8:00 ujutru. Sve distance prolaze kroz prelepe planinske predele. Ucesnici imaju mogucnost da uzivaju u najlepsem pogledu.",
             "image_url": "https://example.com/images/zlatibor.jpg",
             "races": [
                 {
@@ -30,7 +30,7 @@ def create_test_data():
                     "distance_km": 50.0,
                     "elevation_gain_m": 2500,
                     "terrain": "trail",
-                    "description": "Ultra trka od 50 kilometara sa 2500 metara uspona. Trka prolazi kroz najlepse delove Zlatibora. Starni paket ukljucuje majcu, medalju i hranu.",
+                    "description": "Ultra trka od 50 kilometara sa 2500 metara uspona. Trka prolazi kroz najlepse delove Zlatibora. Starni paket ukljucuje majcu, medalju i hranu. Idealna za iskusne ucesnike.",
                     "organizer": "TRK doo",
                     "source": "trka.rs",
                     "race_url": "https://trka.rs/event/zlatibor-ultra-trail/ultra"
@@ -42,7 +42,7 @@ def create_test_data():
                     "distance_km": 30.0,
                     "elevation_gain_m": 1500,
                     "terrain": "trail",
-                    "description": "Srednja distanca od 30km sa 1500m D+. Idealna za pocetnike u ultra trkama.",
+                    "description": "Srednja distanca od 30km sa 1500m D+. Idealna za pocetnike u ultra trkama. Ucesnici dobijaju startni paket koji ukljucuje sve potrebno.",
                     "organizer": "Planinarski klub Zlatibor ad",
                     "source": "trka.rs",
                     "race_url": "https://trka.rs/event/zlatibor-ultra-trail/middle"

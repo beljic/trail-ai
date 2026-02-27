@@ -141,7 +141,10 @@ PREPISANI TEKST:"""
             # If AI response is too different in length, use fallback
             if not reformulated or abs(len(reformulated) - target_length) > target_length * 0.3:
                 print(f"⚠️ AI reformulation length mismatch ({len(reformulated)} vs {target_length}), using fallback")
-                return self.reformulate_description.__wrapped__(self, text, max_length)
+                return self._reformulate_without_ai(text)
+            
+            # Fix grammar and diacritics in AI-generated text
+            reformulated = self._fix_grammar_and_diacritics(reformulated)
             
             return reformulated
             
@@ -258,6 +261,96 @@ PREPISANI TEKST:"""
         # Common patterns: "Race Name 2026" or "Race Name '26"
         return f"{name} {year}"
     
+    def _fix_grammar_and_diacritics(self, text: str) -> str:
+        """
+        Fix grammar issues and missing Serbian diacritics.
+        
+        Args:
+            text: Text to fix
+            
+        Returns:
+            Corrected text
+        """
+        if not text:
+            return text
+        
+        # Common Serbian words with missing diacritics
+        diacritic_corrections = {
+            # č replacements
+            r'\bpocetnike\b': 'početnike',
+            r'\bpocetnika\b': 'početnika',
+            r'\bpocetak\b': 'početak',
+            r'\bpocinje\b': 'počinje',
+            r'\b([Uu])cesnika\b': r'\1česnika',
+            r'\b([Uu])cesnike\b': r'\1česnike',
+            r'\b([Uu])cesnici\b': r'\1česnici',
+            r'\b([Uu])cesce\b': r'\1češće',
+            r'\b([Uu])kljucuje\b': r'\1ključuje',
+            r'\buklju([cč])en([aeiou])\b': r'uključen\2',
+            r'\bznacajn([aeiou])\b': r'značajn\1',
+            r'\bisklju([cč])iv([aeiou])\b': r'isključiv\2',
+            r'\btocka\b': 'tačka',
+            r'\btacka\b': 'tačka',
+            r'\bmesec\b': 'mesec',  # This is correct without diacritic
+            r'\b([Mm])ogucnost([aeiou]?)\b': r'\1ogućnost\2',
+            
+            # ć replacements
+            r'\bkoli([cč])in([aeiou])\b': r'količin\2',
+            r'\b([Vv])ise([cč]?)\b': r'\1iše',
+            r'\bteci\b': 'teći',
+            r'\bpoci\b': 'poći',
+            
+            # š replacements
+            r'\b([Nn])ajlep([sz])([aeioum])\b': r'\1ajlepš\3',
+            r'\bnajlepsem\b': 'najlepšem',
+            r'\blep([sz])([aeioum])\b': r'lepš\2',
+            r'\bprelepe\b': 'prelepe',  # Keep as-is (Ekavian)
+            r'\bstap\b': 'štap',
+            r'\b([Ss])to\b': r'\1to',  # This is correct
+            r'\bdal([sz])e\b': 'dalje',
+            
+            # ž replacements
+            r'\bdr([zž])av([aeiou])\b': r'držav\2',
+            r'\b([Mm])o([zž])e\b': r'\1ože',
+            r'\btakmi([cč])enj([aeiou])\b': r'takmičenj\2',
+            r'\b([Uu])zivaj([aeiou])\b': r'\1živaj\2',
+            
+            # đ replacements (rare in trail running context)
+            r'\bme([dđ])u\b': 'među',
+            
+            # Common typos
+            r'\bstarni\b': 'startni',
+            r'\bodrzava\b': 'održava',
+            r'\bse odrzava\b': 'se održava',
+            r'\bse organiziju\b': 'se organizuje',
+            r'\bprolazii\b': 'prolazi',
+            r'\bDd\+': 'D+',  # Fix D+ notation
+            r'\bD \+': 'D+',
+            r'\bd\+': 'D+',
+            r'\bd \+': 'D+',
+        }
+        
+        result = text
+        
+        # Apply diacritic corrections
+        for pattern, replacement in diacritic_corrections.items():
+            result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
+        
+        # Fix capitalization after periods
+        def capitalize_after_period(match):
+            return match.group(1) + match.group(2).upper()
+        
+        result = re.sub(r'([.!?]\s+)([a-zа-ш])', capitalize_after_period, result)
+        
+        # Fix double spaces
+        result = re.sub(r'\s+', ' ', result)
+        
+        # Fix spacing around common separators
+        result = re.sub(r'\s*([,:;])\s*', r'\1 ', result)
+        result = re.sub(r'\s+([.!?])', r'\1', result)
+        
+        return result.strip()
+    
     def _reformulate_without_ai(self, text: str) -> str:
         """
         Reformulate text without AI by rearranging sentences and using synonyms.
@@ -331,6 +424,9 @@ PREPISANI TEKST:"""
         
         # Fix spacing around punctuation
         result = re.sub(r'\s+([.!?])', r'\1', result)
+        
+        # Apply grammar and diacritic corrections
+        result = self._fix_grammar_and_diacritics(result)
         
         return result.strip()
     
