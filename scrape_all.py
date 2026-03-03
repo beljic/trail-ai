@@ -23,6 +23,7 @@ from scrapers.custom import get_scraper_for_url
 import scrapers.custom.ivanjicatrail  # noqa - registers scraper
 import scrapers.custom.bjelasicatrail  # noqa - registers scraper
 import scrapers.custom.vuckotrail  # noqa - registers scraper
+import scrapers.custom.timisoara21k  # noqa - registers scraper
 
 # Import all scrapers
 from scrapers import trka_rs
@@ -40,6 +41,7 @@ CUSTOM_EVENT_URLS = [
     "https://bjelasicatrail.me/",
     "https://visitbjelasnica.com/vucko-trail-2025/",
     "https://vuckotrail.ba/",
+    "https://timisoara.21k.ro/curse/?lang=en",
 ]
 
 
