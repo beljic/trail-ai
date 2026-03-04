@@ -21,12 +21,18 @@ def _extract_image_url(soup):
     # Try og:image meta tag first
     og_image = soup.find('meta', property='og:image')
     if og_image and og_image.get('content'):
-        return og_image.get('content')
+        url = og_image.get('content')
+        if url and not url.startswith('http'):
+            url = BASE_URL + url
+        return url
     
     # Try twitter:image
     twitter_image = soup.find('meta', property='twitter:image')
     if twitter_image and twitter_image.get('content'):
-        return twitter_image.get('content')
+        url = twitter_image.get('content')
+        if url and not url.startswith('http'):
+            url = BASE_URL + url
+        return url
     
     # Try main content image
     content_img = soup.select_one('.content-panel img, .event-detail img, img.event-image')

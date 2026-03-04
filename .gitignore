@@ -31,6 +31,8 @@ ENV/
 # Data directories (may contain sensitive race data)
 data/raw/
 data/clean/*.jsonl
+data/export/*.json
+data/export/*.jsonl
 data/chroma/
 data/tfidf/
 
